@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <style>
+    circle {
+      fill: orange;
+      stroke: black;
+      stroke-width: 0.7;
+      opacity: 0.7;
+    }
+
+    h2 {
+      text-align: center;
+      color: black;
+    }
+
+    div.years_buttons {
+      position: fixed;
+      top: 50px;
+      left: 50px;
+    }
+
+    div.years_buttons div {
+      background-color: orange;
+      padding: 3px;
+      margin: 7px;
+      cursor: pointer;
+    }
+  </style>
+  <script type="text/javascript">
+
+    // Main d3 function call with initial data imported in
+    // In this case, the map is imported first
+    function draw(geo_data) {
+      "use strict";
+
+      // setting margins and scale for the map svg as a whole
+      var margin = 75,
+        width = (1920 / 2) - margin,
+        height = (1080 / 2) - margin;
+
+      // Just give the page a title but do it using d3
+      d3.select("body")
+        .append("h2")
+        .text("World Cup ")
+        .attr('class', 'title-text');
+
+      // Create the svg element with it's attributes
+      // this is where everything will be appended and is basically the
+      //   container for all the d3 stuff
+      var svg = d3.select("body")
+        .append("svg")
+        .attr("width", width + margin)
+        .attr("height", height + margin)
+        .style('margin-left', '100px')
+        .append('g')
+        .attr('class', 'map');
+
+
+      // Just creating an array of all years the World Cup has been played
+      // This is used later to iterate through and animate the map for each year
+      let years = [];
+
+      for (let i = 1930; i <= 2014; i += 4) {
+        if (i !== 1942 && i !== 1946) {
+          years.push(i);
+        }
+      }
+
+      // Use D3's built in mercator projection scaling
+      // And then adjust it a bit to fit on a smaller screen
+      // We hard set the width of the SVG so it's not super flexible for small screens
+      let projection = d3.geo.mercator()
+        .scale(220)
+        .translate([width / 2, height / 1.5]);
+
+      // Now set the path of the map with the mercator projection passed in
+      let path = d3.geo.path().projection(projection);
+
+      // And create the map element
+      // Some of the styling at the bottom of this was just to make it look nicer
+      let map = svg.selectAll('path')
+        .data(geo_data.features)
+        .enter()
+        .append('path')
+        .attr('d', path)
+        .style('fill', '#4eb0bb')
+        .style('stroke', 'black')
+        .style('stroke-width', '0.5');
+
+      // draw circles logic
+      // This function handles the appending of the cirles to the map
+      // As well as sizing them and figuring out where they should be located
+      const plot_points = (data) => {
+
+        // suss out all of the relevant information for each circle on the map
+        // Pulled this out of the rollup call below for easier readability.
+        // the leaves passed in is an array of arrays that was broken down based on the year in the date
+        // see the nested variable creation below for how this was done
+        const agg_year = (leaves) => {
+          // use d3's sum func to get the sum of all the attendance in a given year
+          let attendance = d3.sum(leaves, (d) => d.attendance);
+          // get all the coords from by mapping through the leaves and then converting them to ints
+          let coords = leaves.map(d => projection([+d.long, +d.lat]));
+          // use d3's mean calculator to get the average x and y coord
+          let x = d3.mean(coords, (d) => d[0]);
+          let y = d3.mean(coords, (d) => d[1]);
+
+          // d3 has it's own set data type. Could now potentially use the native JS one, but no point here
+          let teams = d3.set();
+
+          // d3's set data type has an 'add' method to push items into it
+          leaves.forEach(d => {
+            teams.add(d.team1);
+            teams.add(d.team2);
+          });
+
+          // get the relevant info back from the agg_year callback
+          return {
+            attendance,
+            x,
+            y,
+            teams: teams.values()
+          };
+        }
+
+        // d3 tools to get at the data object
+        // seems backwards as does a fair amount of d3 that we access the data object at the end
+
+        // d3.nest may have been deprecated with the new d3 api...
+        let nested = d3.nest()
+          // tells d3 which prop to pay attention to
+          .key((d) => d.date.getUTCFullYear())
+          // calls the agg_year func above
+          // basically d3's version of JS .map array prototype
+          .rollup(agg_year)
+          .entries(data);
+
+        // simple enough. Get the max from a list of objects
+        let attendance_max = d3.max(nested, (d) => d.values.attendance);
+
+        // leveraging d3's scale api using a square root scale
+        // this is the best way to size circles so that they are in proportion!!!!!!!!!!!
+        let radius = d3.scale.sqrt()
+          .domain([0, attendance_max])
+          .range([0, 15]);
+
+        // pulled out for repeated use
+        let key_func = (d) => d.key;
+
+        // Now append all the circles to the svg element with the info retrieved and returned to the 'nested' variable
+        svg.append('g')
+          .attr('class', 'bubble')
+          .selectAll('circle')
+          .data(
+            // Put smaller circles on top so that we are sure they show up
+            nested.sort((a, b) => (
+              b.values.attendance - a.values.attendance
+            )), key_func)
+          .enter()
+          .append('circle')
+          .attr('cx', (d) => d.values.x)
+          .attr('cy', (d) => d.values.y)
+          // use the radius scale created above to set the radius of the circle elements
+          .attr('r', (d) => radius(d.values.attendance))
+          .attr('fill', '#bad')
+          .attr('stroke', 'black')
+          .attr('stroke-width', '0.7')
+          .attr('opacity', '0.7');
+
+
+        // This is the animation function that we call once for each year
+        // this is also what's called when a button is clicked. This is how we show just the relevant data
+        const update = (year) => {
+          // Grab just the one object from the nested array
+          let filtered = nested.filter(d => new Date(d.key).getUTCFullYear() === year);
+
+          // update the title text to show the year
+          d3.select('.title-text')
+            .text(`World Cup - ${year}`)
+
+          // get all the cirlcles
+          // the key seems to be used similarly to the react key. as a way to ensure dom elements are unique
+          let circles = svg.selectAll('circle')
+            .data(filtered, key_func);
+
+          // remove all the non-relevant circles from the dom
+          // exit is a func built into d3 so that you can hang onto all the elements that are not being updated
+          circles.exit().remove();
+
+          // enter hangs onto the elements that are being updated
+          circles.enter()
+            .append('circle')
+            .transition()
+            .duration(400)
+            .attr('cx', (d) => d.values.x)
+            .attr('cy', (d) => d.values.y)
+            .attr('r', (d) => radius(d.values.attendance));
+
+          // get a list of the countries playing this year
+          let countries = filtered[0].values.teams;
+
+          // if the country is playing, set it to the standard blue
+          // if not, set it to white so it doesn't show.
+          const update_countries = (d) => {
+            if (countries.includes(d.properties.name)) {
+              return '#4eb0bb';
+            }
+            return '#FFF';
+          }
+
+          // Here's where we actually set the style attributes to the country 'paths'
+          svg.selectAll('path')
+            .transition()
+            .duration(200)
+            .style('fill', update_countries)
+            .style('stroke', update_countries);
+        }
+
+
+        // use JS setInterval to iterate through the countries one by one
+        let year_idx = 0;
+
+        let year_interval = setInterval(() => {
+          // call update one at a time
+          update(years[year_idx])
+          year_idx++;
+
+          if (year_idx >= years.length) {
+            clearInterval(year_interval);
+
+            // Only once the animation is complete do we add the buttons to the page
+            let buttons = d3.select('body')
+              .append('div')
+              .attr('class', 'years_buttons')
+              .selectAll('div')
+              .data(years)
+              .enter()
+              .append('div')
+              .text((d) => d);
+
+            // d3 built in event listener with requisite callback func passed in
+            buttons.on('click', (d, bi) => {
+              let allBtns = d3.select('.years_buttons')
+                .selectAll('div')
+                .transition()
+                .duration(250)
+                .style('background-color', 'orange')
+                .style('color', '#000');
+
+              d3.select(allBtns[0][bi])
+                .transition()
+                .duration(250)
+                .style('background', '#4eb0bb')
+                .style('color', '#FFF')
+
+              update(d);
+            });
+          }
+        }, 200);
+
+      }
+
+      let format = d3.time.format('%d-%m-%Y (%H:%M h)');
+
+      // This is actually the first function call that is invoked inside the draw func
+      // Here is where we grab the world cup tsv file and pass through the plot_points callback
+      // We pass three args in:
+        // the tsv file
+        // a cleaner func to clean up the data in the tsv (seems optional, I saw it called without it)
+        // and what we want called with the clean data
+      d3.tsv('world_cup_geo.tsv', (d) => {
+        d.attendance = Number(d.attendance);
+        d.date = format.parse(d['date']);
+        return d;
+      }, plot_points);
+    };
+  </script>
+</head>
+
+<body>
+  <script type="text/javascript">
+    /*
+      Use D3 to load the GeoJSON file
+      */
+
+    // Kick off the whole thing here
+    // Grab the json file, which has all the path info to draw the map and pass in the draw func
+    // No cleaner func is passed in here, but one could be passed in as the second arg.
+    d3.json("world_countries.json", draw);
+  </script>
+</body>
+
+</html>
