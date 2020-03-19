@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <!-- <script src="https://d3js.org/d3-color.v1.min.js"></script>
+  <script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
+  <script src="https://d3js.org/d3-ease.v1.min.js"></script>
+  <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+  <script src="https://d3js.org/d3-selection.v1.min.js"></script>
+  <script src="https://d3js.org/d3-timer.v1.min.js"></script>
+  <script src="https://d3js.org/d3-transition.v1.min.js"></script>
+  <script src="https://d3js.org/d3-drag.v1.min.js"></script> -->
+  <script src="https://d3js.org/d3-zoom.v1.min.js"></script>
+  <style>
+  </style>
+  <script type="text/javascript">
+    function draw(geo_data) {
+      "use strict";
+
+      const getBrowserWidth = () => {
+        return Math.max(
+          document.body.scrollWidth,
+          document.documentElement.scrollWidth,
+          document.body.offsetWidth,
+          document.documentElement.offsetWidth,
+          document.documentElement.clientWidth
+        );
+      }
+
+      let browserWidth = getBrowserWidth();
+
+      var margin = 50,
+        width = browserWidth - (margin * 2),
+        height = ((browserWidth - (margin * 2)) * (2 / 3));
+
+      d3.select("body")
+        .append("h2")
+        .text("Solar Use")
+        .attr('class', 'title-text');
+
+
+      function zoomed() {
+        svg
+          .selectAll('path') // To prevent stroke width from scaling
+          .attr('transform', d3.event.transform);
+
+        let dots = svg.selectAll('.dot')
+          .attr('transform', d3.event.transform);
+      }
+
+      var svg = d3.select("body")
+        .append("svg")
+        .attr("width", width + margin)
+        .attr("height", height + margin)
+        .style('margin', 'auto')
+        .append('g')
+        .attr('class', 'map')
+        .call(d3.zoom().on("zoom", zoomed));
+
+      let projection = d3.geoAlbersUsa()
+        .fitSize([width, height], geo_data)
+
+      let path = d3.geoPath(projection)
+
+      let map = svg.selectAll('path')
+        .data(geo_data.features)
+        .enter()
+        .append('path')
+        .attr('d', path)
+        .style('fill', '#4eb0bb')
+        .style('stroke', 'black')
+        .style('stroke-width', '0.5');
+
+      const plot_points = (solar_data) => {
+        // here's where I'll add the cities
+
+        let max_installed = d3.max(solar_data, (d) => d.SolarInstalled);
+
+        let radius = d3.scaleSqrt()
+          .domain([0, max_installed])
+          .range([10, 30]);
+
+        svg.append('g')
+          .attr('class', 'bubble')
+          .selectAll('circle')
+          .data(solar_data)
+          .enter()
+          .append('circle')
+          .attr('class', 'dot')
+          .attr('cx', (d) => projection([d.Longitude, d.Latitude])[0])
+          .attr('cy', (d) => projection([d.Longitude, d.Latitude])[1])
+          .attr('r', (d) => radius(d.SolarInstalled))
+          // TODO: set these to a color range
+          .attr('fill', '#bad')
+          .attr('stroke', 'black')
+          .attr('stroke-width', '0.7')
+          .attr('opacity', '0.7')
+      }
+
+      let format = d3.timeFormat('%d-%m-%Y (%H:%M h)');
+
+      d3.json('shiningArray.json').then(plot_points);
+    };
+  </script>
+</head>
+
+<body>
+  <script type="text/javascript">
+    /*
+      Use D3 to load the GeoJSON file
+      */
+
+    d3.json("us-states.json").then((data) => {
+      draw(data);
+    });
+  </script>
+</body>
+
+</html>

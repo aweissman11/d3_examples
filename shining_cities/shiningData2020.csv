@@ -1,0 +1,71 @@
+id,City,State,SolarInstalled,SolarRank,PerCapitaSolar,PerCapitaSolarRank,Potential,Latitude,Longitude
+"anchorage, ak","Anchorage, AK",AK,2.4,59,8.22,58,0,61.2180556,-149.9002778
+"birmingham, al","Birmingham, AL",AL,0.74,67,3.52,67,536.8,33.5206608,-86.80249
+"little rock, ar","Little Rock, AR",AR,1.8,62,9.1,55,800,34.7465,-92.2896
+"phoenix, az","Phoenix, AZ",AZ,272.4,4,164.07,8,2981.4,33.4483771,-112.0740373
+"los angeles, ca","Los Angeles, CA",CA,483.8,1,121.24,15,5443.7,34.0522342,-118.2436849
+"riverside, ca","Riverside, CA",CA,50.89,17,154.17,9,612.1,33.9533487,-117.3961564
+"sacramento, ca","Sacramento, CA",CA,57.37,15,112.82,16,777.2,38.5815719,-121.4943996
+"san diego, ca","San Diego, CA",CA,420.38,2,294.8,2,2218.8,32.715738,-117.1610838
+"san francisco, ca","San Francisco, CA",CA,54.86,16,62.11,22,671.5,37.7749295,-122.4194155
+"san jose, ca","San Jose, CA",CA,223.67,7,217.13,4,1638.5,37.3382082,-121.8863286
+"denver, co","Denver, CO",CO,104.57,11,145.95,10,677.4,39.7392358,-104.990251
+"hartford, ct","Hartford, CT",CT,8.56,38,69.8,20,117.5,41.7637111,-72.6850932
+"washington, dc","Washington, DC",DC,88.97,12,126.66,13,343.9,38.9071923,-77.0368707
+"wilmington, de","Wilmington, DE",DE,5.77,47,81.65,18,72,39.7390721,-75.5397878
+"jacksonville, fl","Jacksonville, FL",FL,63.63,13,70.4,19,1714.5,30.3321838,-81.655651
+"miami, fl","Miami, FL",FL,4.7,52,9.99,53,750.7,25.7616798,-80.1917902
+"orlando, fl","Orlando, FL",FL,9.96,35,34.87,32,582.5,28.5383355,-81.3792365
+"tampa, fl","Tampa, FL",FL,16.5,29,42,29,783.1,27.950575,-82.4571776
+"atlanta, ga","Atlanta, GA",GA,7.43,43,14.91,48,495.5,33.7489954,-84.3879824
+"honolulu, hi","Honolulu, HI",HI,292.12,3,840.88,1,0,21.3069444,-157.8583333
+"des moines, ia","Des Moines, IA",IA,1.47,64,6.79,61,351.1,41.5868,-93.625
+"boise, id","Boise, ID",ID,7.56,41,33.04,33,428.1,43.6135,-116.20345
+"chicago, il","Chicago, IL",IL,24.42,25,9.02,56,2775.3,41.8781136,-87.6297982
+"indianapolis, in","Indianapolis, IN",IN,122.28,9,141.01,12,0,39.768403,-86.158068
+"wichita, ks","Wichita, KS",KS,1.77,63,4.54,66,802.5,37.688889,-97.336111
+"louisville, ky","Louisville, KY",KY,2.18,60,3.52,67,0,38.2526647,-85.7584557
+"new orleans, la","New Orleans, LA",LA,48.9,18,125.06,14,1276.6,29.9510658,-90.0715323
+"boston, ma","Boston, MA",MA,38.56,20,55.51,25,340.8,42.3600825,-71.0588801
+"baltimore, md","Baltimore, MD",MD,15.31,30,25.42,38,459.7,39.2903848,-76.6121893
+"portland, me","Portland, ME",ME,3.64,56,54.75,26,108.6,43.661471,-70.2553259
+"detroit, mi","Detroit, MI",MI,4.11,55,6.12,63,1255.9,42.331427,-83.0457538
+"minneapolis, mn","Minneapolis, MN",MN,10.29,34,24.18,39,359.4,44.977753,-93.2650108
+"kansas city, mo","Kansas City, MO",MO,19.48,27,39.59,30,970.6,39.0997265,-94.5785667
+"st. louis, mo","St. Louis, MO",MO,11.97,32,39.51,31,631.7,38.6270025,-90.1994042
+"jackson, ms","Jackson, MS",MS,2.74,58,16.69,45,421.937,32.2987573,-90.1848103
+"billings, mt","Billings, MT",MT,1.16,65,10.54,52,229,45.7832856,-108.5006904
+"charlotte, nc","Charlotte, NC",NC,13.76,31,15.78,47,1355.8,35.2270869,-80.8431267
+"raleigh, nc","Raleigh, NC",NC,11,33,23.43,40,673.9,35.7795897,-78.6381787
+"fargo, nd","Fargo, ND",ND,0.14,70,1.1,70,150.6,46.8771863,-96.7898034
+"omaha, ne","Omaha, NE",NE,0.83,66,1.77,69,875.7,41.2523634,-95.9979883
+"manchester, nh","Manchester, NH",NH,4.89,51,43.48,28,158.6,42.9956397,-71.4547891
+"newark, nj","Newark, NJ",NJ,27.33,24,96.9,17,154.1,40.735657,-74.1723667
+"albuquerque, nm","Albuquerque, NM",NM,153.04,8,273.19,3,1252.3,35.0853336,-106.6055534
+"las vegas, nv","Las Vegas, NV",NV,105.79,10,164.1,7,946,36.1699412,-115.1398296
+"buffalo, ny","Buffalo, NY",NY,7.83,40,30.54,36,511.9,42.8864468,-78.8783689
+"new york, ny","New York, NY",NY,244.78,6,29.14,37,1276.6,40.7127837,-74.0059413
+"cincinnati, oh","Cincinnati, OH",OH,6.7,46,22.16,42,509.7,39.1031182,-84.5120196
+"cleveland, oh","Cleveland, OH",OH,3.56,57,9.26,54,734.2,41.49932,-81.6943605
+"columbus, oh","Columbus, OH",OH,6.88,45,7.71,59,1904.8,39.9611755,-82.9987942
+"oklahoma city, ok","Oklahoma City, OK",OK,5.73,48,8.83,57,2089.3,35.4675602,-97.5164276
+"portland, or","Portland, OR",OR,37.82,21,57.9,23,1396.6,45.5230622,-122.6764816
+"philadelphia, pa","Philadelphia, PA",PA,16.91,28,10.67,50,884.2,39.9525839,-75.1652215
+"pittsburgh, pa","Pittsburgh, PA",PA,4.96,50,16.47,46,388,40.4406248,-79.9958864
+"providence, ri","Providence, RI",RI,8.92,36,49.76,27,195.7,41.8239891,-71.4128343
+"charleston, sc","Charleston, SC",SC,7.56,41,55.52,24,266.611,32.7764749,-79.9310512
+"columbia, sc","Columbia, SC",SC,4.23,54,31.68,35,251.7,34.0007104,-81.0348144
+"memphis, tn","Memphis, TN",TN,8.83,37,13.57,49,1439.3,35.1495343,-90.0489801
+"nashville, tn","Nashville, TN",TN,7.09,44,10.6,51,0,36.1626638,-86.7816016
+"austin, tx","Austin, TX",TX,61.84,14,64.14,21,1443,30.267153,-97.7430608
+"dallas, tx","Dallas, TX",TX,27.36,23,20.34,43,2082.7,32.7766642,-96.7969879
+"houston, tx","Houston, TX",TX,42.53,19,18.29,44,4604.7,29.7604267,-95.3698028
+"san antonio, tx","San Antonio, TX",TX,254.47,5,166.08,6,3721.4,29.4241219,-98.4936282
+"salt lake city, ut","Salt Lake City, UT",UT,28.32,22,141.17,11,276.4,40.7607793,-111.8910474
+"richmond, va","Richmond, VA",VA,5.12,49,22.37,41,401.1,37.5407246,-77.4360481
+"virginia beach, va","Virginia Beach, VA",VA,2.12,61,4.72,65,859.9,36.8529263,-75.977985
+"burlington, vt","Burlington, VT",VT,7.88,39,183.8,5,43.5,44.4758825,-73.212072
+"seattle, wa","Seattle, WA",WA,23.73,26,31.85,34,1080.5,47.6062095,-122.3320708
+"milwaukee, wi","Milwaukee, WI",WI,4.54,53,7.66,60,848.7,43.0389025,-87.9064736
+"charleston, wv","Charleston, WV",WV,0.3,69,6.35,62,152.9,38.3498195,-81.6326234
+"cheyenne, wy","Cheyenne, WY",WY,0.36,68,5.63,64,150.155,41.14,-104.8202
