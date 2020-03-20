@@ -29,6 +29,7 @@ map.on('load', function () {
   filterDropper.textContent = '| | |';
   filterDropper.addEventListener('click', (e) => {
     filtersWrapper.style.height = showShiningCities ? '48px' : 'auto';
+    filterDropper.style.transform = showShiningCities ? '' : 'rotate(90deg)';
     showShiningCities = !showShiningCities;
   });
 
@@ -189,6 +190,7 @@ map.on('load', function () {
   legendDropper.textContent = '| | |';
   legendDropper.addEventListener('click', (e) => {
     mapLegend.style.height = showLegend ? '40px' : 'auto';
+    legendDropper.style.transform = showLegend ? '' : 'rotate(90deg)';
     showLegend = !showLegend;
   });
 
