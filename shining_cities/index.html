@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <!-- <script src="https://d3js.org/d3-color.v1.min.js"></script>
+  <script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
+  <script src="https://d3js.org/d3-ease.v1.min.js"></script>
+  <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+  <script src="https://d3js.org/d3-selection.v1.min.js"></script>
+  <script src="https://d3js.org/d3-timer.v1.min.js"></script>
+  <script src="https://d3js.org/d3-transition.v1.min.js"></script> -->
+  <script src="https://d3js.org/d3-drag.v1.min.js"></script>
+  <script src="https://d3js.org/d3-zoom.v1.min.js"></script>
+  <style>
+    /* orange: #FCAF17 */
+    /* blue: #005e99 */
+    * {
+      font-family: 'Open Sans Condensed', sans-serif;
+    }
+
+    .d3-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row-reverse;
+    }
+
+    .map-wrapper {
+      cursor: grab;
+    }
+
+    .map-wrapper:active {
+      cursor: grabbing;
+    }
+
+    .title-text {
+      margin: auto;
+      margin-top: 50px;
+      text-align: center;
+    }
+
+    #state-city-name {
+      position: absolute;
+      width: max-content;
+      height: max-content;
+      padding: 3px;
+      background-color: bisque;
+      border-radius: 2px;
+    }
+
+    .state-tooltip {
+      position: absolute;
+      width: max-content;
+      height: max-content;
+      padding: 3px 8px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 3px 2px 5px 1px #00000087;
+    }
+
+    .buttons-container {
+      background: #005e99;
+      padding: 10px 25px 30px;
+      color: #FFF;
+      width: 180px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .shining-title {
+      font-size: 1.1em;
+      margin-bottom: 3px;
+    }
+
+    .total-container,
+    .capita-container {
+      margin: 0;
+    }
+
+    .li-city {
+      color: #FCAF17;
+    }
+  </style>
+  <script type="text/javascript">
+    function draw(geo_data) {
+      "use strict";
+
+      // TODO: handle screen resize and make responsive
+      const getBrowserWidth = () => {
+        return Math.max(
+          document.body.scrollWidth,
+          document.documentElement.scrollWidth,
+          document.body.offsetWidth,
+          document.documentElement.offsetWidth,
+          document.documentElement.clientWidth
+        );
+      }
+
+      let browserWidth = getBrowserWidth();
+
+      var margin = 50,
+        width = browserWidth - (margin * 2) - 230,
+        height = ((browserWidth - (margin * 2)) * (2 / 3));
+
+      function zoomed() {
+        const { transform } = d3.event;
+
+        svg
+          .selectAll('path') // To prevent stroke width from scaling
+          .attr('transform', transform);
+
+        let dots = svg.selectAll('.dot')
+          .attr('transform', transform);
+
+      }
+
+      const hideToolTip = () => {
+        if ((d3.event.target.className && d3.event.target.className.baseVal !== 'dot')) {
+          d3.selectAll('.state-tooltip')
+            .remove();
+        }
+      }
+
+      d3.select('HTML')
+        .on('click', hideToolTip);
+
+      var svg = d3.select(".d3-container")
+        .append("svg")
+        .attr('class', 'map-wrapper')
+        .attr("width", width + margin)
+        .attr("height", height + margin)
+        .style('margin', 'auto')
+        .append('g')
+        .attr('class', 'map')
+        .call(d3.zoom().on("zoom", zoomed));
+
+      let projection = d3.geoAlbersUsa()
+        .fitSize([width, height], geo_data)
+
+      let path = d3.geoPath(projection)
+
+      let map = svg.selectAll('path')
+        .data(geo_data.features)
+        .enter()
+        .append('path')
+        .attr('d', path)
+        .style('fill', '#005e99de')
+        .style('stroke', 'black')
+        .style('stroke-width', '0.5');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const plot_points = (solar_data) => {
+
+        const displayTopCities = (solar_data) => {
+          let perCapita = solar_data.sort((a, b) => (
+            b.PerCapitaSolar - a.PerCapitaSolar)).slice(0, 10);
+
+          let buttonContainer = d3.select('.d3-container')
+            .append('div')
+            .attr('class', 'buttons-container')
+
+          buttonContainer
+            .append('h2')
+            .text("America's Shining Cities")
+
+          buttonContainer
+            .append('h2')
+            .text('By Solar PV Installed per Capita:')
+            .attr('class', 'shining-title')
+
+          let capitaButtons = d3.select('.buttons-container')
+            .append('ol')
+            .attr('class', 'capita-container')
+            .selectAll('li')
+            .data(perCapita)
+            .enter()
+            .append('li')
+            .attr('class', 'li-num')
+            .append('a')
+            .attr('class', 'li-city')
+            .text((d) => d.City)
+            .on('click', (d) => {
+              console.log('showtooltip');
+              showToolTip(d)
+            })
+
+          buttonContainer
+            .append('h2')
+            .text('By Total Solar PV Installed:')
+            .attr('class', 'shining-title');
+
+          let totalSolar = solar_data.sort((a, b) => (
+            b.SolarInstalled - a.SolarInstalled)).slice(0, 10);
+
+          let toalButtons = d3.select('.buttons-container')
+            .append('ol')
+            .attr('class', 'total-container')
+            .selectAll('li')
+            .data(totalSolar)
+            .enter()
+            .append('li')
+            .attr('class', 'li-num')
+            .append('a')
+            .attr('class', 'li-city')
+            .text((d) => d.City);
+        }
+
+
+        let max_installed = d3.max(solar_data, (d) => d.SolarInstalled);
+
+        let radius = d3.scaleSqrt()
+          .domain([0, max_installed])
+          .range([10, 30]);
+
+        let bubbles = svg.append('g')
+          .attr('class', 'bubble')
+          .selectAll('circle')
+          .data(solar_data)
+          .enter()
+
+        const showCityName = (d) => {
+          d3.select('.d3-container')
+            .append('div')
+            .attr('id', 'state-city-name')
+            .style('left', (d3.event.clientX + 5) + 'px')
+            .style('top', (d3.event.clientY + 5) + 'px')
+            .text(d.City)
+        }
+
+
+
+
+
+
+        const showToolTip = (d, i) => {
+          console.log('show me the tooltip');
+          console.log('d :', d);
+          // TODO: remove existing tip if there is one
+          let toolTip = d3.select('.d3-container')
+            .append('div')
+            .attr('class', 'state-tooltip')
+            .style('left', (projection([d.Longitude, d.Latitude])[0]) + 'px')
+            .style('top', (projection([d.Longitude, d.Latitude])[1]) + 'px')
+
+          toolTip.append('h3')
+            .text(d.City)
+          toolTip.append('p')
+            .text('Solar PV per Capita: ' + d.PerCapitaSolar)
+          toolTip.append('p')
+            .text('National Rank: ' + d.PerCapitaSolarRank)
+          toolTip.append('hr')
+          toolTip.append('p')
+            .text('Total Solar PV Installed: ' + d.SolarInstalled)
+          toolTip.append('p')
+            .text('National Rank: ' + d.SolarRank)
+
+          debugger;
+          // hideCityName();
+        }
+
+
+
+
+
+
+
+
+
+
+
+        const hideCityName = () => {
+          d3.select('#state-city-name')
+            .remove();
+        }
+
+        displayTopCities(solar_data);
+
+
+        let dot = bubbles.append('circle')
+          .attr('class', 'dot')
+          .attr('cx', (d) => projection([d.Longitude, d.Latitude])[0])
+          .attr('cy', (d) => projection([d.Longitude, d.Latitude])[1])
+          .attr('r', (d) => radius(d.SolarInstalled))
+          // TODO: set these to a color range
+          .attr('fill', '#FCAF17de')
+          .attr('stroke', 'black')
+          .attr('stroke-width', '0.7')
+          .attr('opacity', '0.7')
+          .attr('cursor', 'pointer')
+          .attr('position', 'relative')
+          .on('mouseover', showCityName)
+          .on('click', (d, i) => {
+            showToolTip(d, i);
+            hideCityName();
+          })
+          .on('mouseout', hideCityName)
+      }
+
+      let format = d3.timeFormat('%d-%m-%Y (%H:%M h)');
+
+      d3.json('shiningArray.json').then(plot_points);
+    };
+  </script>
+</head>
+
+<body>
+  <h2 class='title-text'>America's Shining Cities</h2>
+  <div class='d3-container'>
+    <script type="text/javascript">
+      /*
+      Use D3 to load the GeoJSON file
+      */
+
+      d3.json("us-states.json").then((data) => {
+        draw(data);
+      });
+    </script>
+  </div>
+</body>
+
+</html>
