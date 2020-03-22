@@ -14,7 +14,7 @@ let getHtml = (props) => {
   return '<h3>' + props.name + '</h3>' +
     '<p><b>Solar PV per Capita: </b>' + props.PerCapitaSolar + '</p>' +
     '<p><b>National Rank: </b>' + props.PerCapitaSolarRank + '</p>' +
-    '<p><b>Solar PV per Capita: </b>' + props.SolarInstalled + '</p>' +
+    '<p><b>Total Solar Installed: </b>' + props.SolarInstalled + '</p>' +
     '<p><b>National Rank: </b>' + props.SolarRank + '</p>'
 }
 
@@ -93,7 +93,7 @@ map.on('load', function () {
 
   let totalTitle = document.createElement('p');
   totalTitle.className = 'rank-type';
-  totalTitle.textContent = "By Solar PV Installed per Capita:";
+  totalTitle.textContent = "By Total Solar Installed:";
 
   filterGroup2.appendChild(totalTitle);
 
@@ -209,7 +209,7 @@ map.on('load', function () {
     legendFlexBox.appendChild(ranking);
 
 
-    ranking.addEventListener('click', function(e) {
+    ranking.addEventListener('click', function (e) {
       map.setFilter(
         'shining-cities',
         [
